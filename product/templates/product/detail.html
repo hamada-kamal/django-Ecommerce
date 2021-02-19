@@ -1,0 +1,41 @@
+{% extends 'product/base.html' %}
+{% load static %}
+{% block body %}
+<div class="m-3 message">
+  {% if messages %}
+    <ul class="messages">
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+  <main class="mt-5 pt-4">
+    <div class="container dark-grey-text mt-5">
+      <div class="row wow fadeIn">
+        <div class="col-md-6 mb-4">
+              <img src="{{product.imageURL}}" class="img-fluid" alt="">
+        </div>
+        <div class="col-md-6 mb-4">
+          <div class="p-4">
+            <p class="lead font-weight-bold">{{product}}</p>
+            <p class="lead">
+                  <span class="mr-1">
+                    ${{product.price}}
+                  </span>
+            </p>
+            <p class="lead font-weight-bold">Description</p>
+            
+            <form class="d-flex justify-content-left">
+              <button data-product="{{product.id}}" data-action="add" class="btn btn-dark btn-md my-0 p update-cart" type="submit">Add to cart
+                <i class="fas fa-shopping-cart ml-1"></i>
+              </button>
+            </form>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  {% endblock body %}
+  
