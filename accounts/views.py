@@ -4,6 +4,7 @@ from django.contrib.auth import login , authenticate
 from .models import Profile
 from .forms import UserForm , ProfileForm
 from django.contrib.auth.decorators import login_required
+from product.models import Order
 # Create your views here.
 
 
@@ -29,6 +30,14 @@ def signup(request):
 
 @login_required(login_url='/accounts/login/')
 def profile(request , slug):
+
     profile = get_object_or_404(Profile , slug=slug)
-    context = {'profile' : profile}
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        cartItems = order.get_cart_items
+    else:
+        order = {'get_cart_total':0, 'get_cart_items':0, 'shipping': False}  
+        cartItems = order['get_cart_items']
+    context = {'profile' : profile,'cartItems': cartItems}
     return render(request , 'profile.html' , context)

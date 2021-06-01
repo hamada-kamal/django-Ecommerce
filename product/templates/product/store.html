@@ -1,16 +1,16 @@
-{% extends 'product/base.html' %}
+{% extends 'product/main.html' %}
 {% load static %}
 {% block body %}
 
 
 
-          {% for product in products %}
-            <div class="col-md-4 mt-3">
+          <!-- {% for product in products %}
+            <div class="col-md-3 mt-3">
               <div class="card">
-                <img src="{{product.imageURL}}" class="card-img-top" alt="...">
+                <img src="{{product.imageURL}}" class="thumbnail" alt="...">
                 <div class="card-body">
                   <h5 class="card-title text-center">{{product}}</h5>
-                  
+                  <h5 class="card-title text-center">{{product.price}}</h5>
                   {% if request.user.customer in product.like.all %}
                   <button data-product="{{product.id}}" data-action="add"
                   class="btn btn-danger like-product">
@@ -21,13 +21,13 @@
                   class="btn btn-outline-dark like-product">
                   <i class="fas fa-heart"></i> <small>{{product.likeNumber}}</small>
                   </button> 
-                  {% endif %}
+                  {% endif %} -->
                     
                   <!-- <button data-product="{{product.id}}" data-action="add"
                   class="btn btn-outline-info like-product">
                   <i class="fas fa-heart"></i> 
                 </button>   -->
-                  <button data-product="{{product.id}}" data-action="add" class="btn btn-dark update-cart">Add To Cart
+                  <!-- <button data-product="{{product.id}}" data-action="add" class="btn btn-dark update-cart">Add To Cart
                       <i class="fas fa-shopping-cart ml-1"></i>
                     </button>
                 
@@ -40,8 +40,37 @@
                 </div>
               </div>
             </div>
+        {% endfor %} -->
+        <div class="container mt-5 mb-5">
+          <div class="row">
+        {% for product in products %}
+        <div class="col-lg-4">
+          <img class="thumbnail" src="{{product.imageURL}}">
+          <div class="box-element product">
+            <h6><strong>{{product.name}}</strong></h6>
+            <hr>
+    
+            <button data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
+            
+            <a class="btn btn-outline-success" href="{{product.get_absolute_url}}">View</a>
+            {% if request.user.customer in product.like.all %}
+                  <button data-product="{{product.id}}" data-action="add"
+                  class="btn btn-danger like-product">
+                  <i class="fas fa-heart"></i> <small>{{product.likeNumber}}</small>
+                  </button>
+                  {% else %}
+                  <button data-product="{{product.id}}" data-action="add"
+                  class="btn btn-outline-dark like-product">
+                  <i class="fas fa-heart"></i> <small>{{product.likeNumber}}</small>
+                  </button> 
+                  {% endif %}
+            <h4 style="display: inline-block; float: right"><strong>${{product.price}}</strong></h4>
+    
+          </div>
+        </div>
         {% endfor %}
-     
+          </div>
+          </div>
 
 
       <!-- {% if product_list.has_other_pages %} -->
@@ -87,7 +116,7 @@
       <!-- {% endif %} -->
     <!-- </div>
   </main> -->
-  <!--Main layout-->
+  <!--Main layout--> 
   {% if products.has_other_pages %}
   <div class="container">
     <div class="row">

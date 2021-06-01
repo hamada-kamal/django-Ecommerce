@@ -1,5 +1,4 @@
-{% extends 'base.html' %}
-
+{% extends 'product/main.html' %}
 {% load static %}
 {% block body %}
   <!--Main layout-->
@@ -14,9 +13,9 @@
 
           
           {% if profile.image %}
-              <img src="{{profile.image.url}}" class="img-fluid" alt="">
+              <img src="{{profile.image.url}}" class="img-fluid img-thumbnail"  alt="">
         {% else %}
-             <img src="{% static 'site_static/img/user-default.png' %}" class="img-fluid" alt="">
+             <img src="{% static 'img/user-default.png' %}" class="img-fluid img-thumbnail" alt="">
         {% endif %}
 
         </div>

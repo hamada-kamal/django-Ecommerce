@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
 # from django.core.urlresolvers import reverse
 # Create your models here.
 
@@ -17,7 +18,7 @@ class Customer(models.Model):
     email = models.CharField(max_length=200)
 
     def __str__(self):
-        return str(self.user)
+        return str(self.name)
 @receiver(post_save, sender=User)
 def create_customer(sender, instance, created, **kwargs):
     if created:
@@ -25,10 +26,11 @@ def create_customer(sender, instance, created, **kwargs):
 
 
 
+
 class Product(models.Model):
     name = models.CharField(max_length=100 , verbose_name=_("Product Name "))
     image = models.ImageField(upload_to='prodcut/' , verbose_name=_("Image") , blank=True, null=True)
-    price = models.DecimalField(max_digits=5  , decimal_places=2 , verbose_name=_("Price"))
+    price = models.DecimalField(max_digits=7  , decimal_places=2 , verbose_name=_("Price"))
     digital = models.BooleanField(default=False,null=True, blank=True)
     like = models.ManyToManyField(Customer,blank=True)
     PRDSLug = models.SlugField(blank=True, null=True , verbose_name=_("slug"))
@@ -38,6 +40,7 @@ class Product(models.Model):
     def save(self , *args  ,**kwargs ):
         self.PRDSLug = slugify(self.name)
         super(Product , self).save( *args , **kwargs)
+
 
 
     @property
@@ -106,7 +109,7 @@ class Order(models.Model):
     	return total 
 
     def __str__(self):
-	    return "Order: " +str(self.customer)
+	    return "Order Name: " +str(self.customer)
     
 
 

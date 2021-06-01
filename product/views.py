@@ -4,6 +4,8 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 import json
 import datetime
+from .utils import cookieCart, CartData, guestOrder
+from django.contrib.auth.decorators import login_required
 
 # def userlogged(request):
 #     customer = request.user.customer
@@ -20,30 +22,21 @@ def all_product(request):
     paginator = Paginator(products, 3) 
     pages = request.GET.get('page')
     products = paginator.get_page(pages)
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        cartItems = order.get_cart_items
-    else:
-        order = {'get_cart_total':0, 'get_cart_items':0, 'shipping': False}
-        cartItems = order['get_cart_items']
 
-  
+    data = CartData(request)
+    cartItems = data['cartItems']
 
     context = {'products' : products, 'cartItems': cartItems,}
     return render(request , 'product/store.html' , context)
 
 
 
+
 def product_detail(request , slug):
     product = get_object_or_404(Product ,PRDSLug=slug )
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        cartItems = order.get_cart_items
-    else:
-        order = {'get_cart_total':0, 'get_cart_items':0, 'shipping': False}  
-        cartItems = order['get_cart_items']
+    data = CartData(request)
+    cartItems = data['cartItems']
+
     context = {'product' : product, 'cartItems': cartItems,}
     return render(request , 'product/detail.html' , context)
 
@@ -51,30 +44,28 @@ def product_detail(request , slug):
 
 
 def cart(request):
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        items = order.orderitem_set.all()
-        cartItems = order.get_cart_items
-    else:
-        order = {'get_cart_total':0, 'get_cart_items':0, 'shipping': False}
-        items = []
-        cartItems = order['get_cart_items']
+    data = CartData(request)
+    cartItems = data['cartItems']
+    order = data['order']
+    items = data['items']
+
     return render(request, 'product/cart.html', {'items':items, 'order': order, 'cartItems': cartItems})
 
+
+
+
+
 def checkout(request):
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        items = order.orderitem_set.all()
-        cartItems = order.get_cart_items
-    else:
-        order = {'get_cart_total':0, 'get_cart_items':0, 'shipping': False}
-        items = []
-        cartItems = order['get_cart_items']
+    data = CartData(request)
+    cartItems = data['cartItems']
+    order = data['order']
+    items = data['items']
     return render(request, 'product/checkout.html', {'items':items, 'order': order, 'cartItems': cartItems})
 
 
+
+
+@login_required
 def updateItem(request):
     datat = json.loads(request.body)
 
@@ -101,6 +92,7 @@ def updateItem(request):
     return JsonResponse('Item was added', safe=False)     
 
 
+
 def processOrder(request):
     transaction_id = datetime.datetime.now().timestamp()
     data = json.loads(request.body)
@@ -108,28 +100,21 @@ def processOrder(request):
     if request.user.is_authenticated:
         customer = request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        total = float(data['form']['total'])
-        order.transaction_id = transaction_id
 
-        if total == order.get_cart_total:
-        	order.complete = True
-        order.save()
-
-        if order.shipping == True:
-            ShippingAddress.objects.create(
-            customer=customer,
-            order=order,
-            address=data['shipping']['address'],
-            city=data['shipping']['city'],
-            state=data['shipping']['state'],
-            zipcode=data['shipping']['zipcode'],
-            )
 
     else:
-        print("user not loged in ..")
+        customer, order = guestOrder(request, data)
 
-    return JsonResponse('payment complete', safe=False)   
+    total = float(data['form']['total'])
+    order.transaction_id = transaction_id
 
+    if total == order.get_cart_total:
+        order.complete = True
+    order.save()    
+
+    return JsonResponse('payment complete', safe=False)  
+    
+     
 def likeItem(request):
     datat = json.loads(request.body)
 
@@ -146,7 +131,6 @@ def likeItem(request):
             product.like.add(customer)
 
     return JsonResponse('Item was liked or unliked', safe=False) 
-
 
 
 def liked_product(request):

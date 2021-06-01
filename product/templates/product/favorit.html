@@ -1,8 +1,9 @@
-{% extends 'product/base.html' %}
+{% extends 'product/main.html' %}
 {% load static %}
 {% block body %}
 
-
+<div class="container mt-5 mb-5">
+  <div class="row">
 
           {% for product in products %}
             <div class="col-md-4 mt-3">
@@ -36,7 +37,8 @@
             <h4>Add something to save for later</h4> <a href="{% url 'products:store' %}" class="btn btn-outline-dark cart-btn-transform m-3" data-abc="true">Add Some Product</a>
         </div>    
         {% endfor %}
-     
+  </div>
+  </div>
 
 
       <!-- {% if product_list.has_other_pages %} -->

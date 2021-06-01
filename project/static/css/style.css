@@ -119,3 +119,26 @@ h1,h2,h3,h4,h5,h6{
 	border-radius: 4px;
 	padding: 10px;
 }
+
+.product_img{
+	width : 70%;
+    height: 200px;
+    overflow: auto;
+}
+.thumbnails{        
+    /* width: 300px; 
+    // or you could use percentage values for responsive layout */
+	width : 40%;
+    height: 70px;
+    overflow: auto;
+}
+.thumbnails img{
+    /* // your styles for the image */
+    width: 100%;
+    height: auto;
+    display: block;
+}
+.img-thumbnail{
+	width : 420px;
+    height: 300px;
+}
