@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'product.apps.SuitConfig',
     'accounts',
     'django.contrib.admin',
     'django.contrib.auth',

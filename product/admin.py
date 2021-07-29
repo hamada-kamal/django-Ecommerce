@@ -12,7 +12,7 @@ class orderLineItem(admin.TabularInline):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    # list_display = ('customer','date_ordered',)
+    list_display = ('customer', 'complete','date_ordered',)
     inlines = [orderLineItem]
     
 
